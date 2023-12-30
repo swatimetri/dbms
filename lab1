@@ -1,0 +1,137 @@
+create table publishers
+(
+name varchar(10),
+adress varchar(20),
+phone number(10),
+primary key(name)
+);
+
+CREATE TABLE book (
+    book_id NUMBER(4),
+    title VARCHAR(10), 
+    publisher_name VARCHAR(10), 
+    pub_year NUMBER(4),
+    PRIMARY KEY(book_id),
+    FOREIGN KEY(publisher_name) REFERENCES publisher(name)
+);
+
+ create table book_authors
+(
+book_id number(4),
+author_name varchar(10),
+foreign key(book_id)references book(book_id));
+
+create table library_programme
+(
+programme_id number(4),
+programme_name varcahr(10),
+adress varchar(10),
+primary key(programme_id));
+
+create table card
+(
+card_no number(5),
+primary key(card_no)
+);
+
+create table book_copy
+(
+book_id number(4),
+programme_id number(4),
+no_of_copies number(5),
+primary key(book_id,programme_id),
+foreign key (book_id) references book(book_id)on delete cascade,
+foreign key(programme_id)references library_programme(programme_id));
+ 
+create table book_lendings
+(
+book_id number(4),
+programme_id number(7),
+card_no number(5),
+date_out date,
+due_date date,
+primary key(book_id,programme_id,card_no),
+foreign key(book_id) references book(book_id) on delete cascade,
+foreign key(programme_id)references library_programme(programme_id),
+foreign key(card_no)references card(card_no)
+);
+
+INSERT INTO publisher VALUES ('swati', 'mite moodabidare', 9998887776);
+INSERT INTO publisher VALUES ('sinchana', 'mite moodabidare', 1112223334);
+INSERT INTO publisher VALUES ('trapti', 'mite moodabidare', 5551234567);
+INSERT INTO publisher VALUES ('sam', 'mite moodabidare', 9998887776);
+INSERT INTO publisher VALUES ('vaish', 'mite moodabidare', 1112223334);
+
+INSERT INTO book VALUES (1, 'Title1', 'swati', 2023);
+INSERT INTO book VALUES (2, 'Title2', 'sinchana', 2024);
+INSERT INTO book VALUES (3, 'Title3', 'trapti', 2025);
+INSERT INTO book VALUES (4, 'Title4', 'sam', 2026);
+INSERT INTO book VALUES (5, 'Title1', 'vaish', 2027);
+
+INSERT INTO book_authors VALUES (1, 'swatim');
+INSERT INTO book_authors VALUES (2, 'sinchanam');
+INSERT INTO book_authors VALUES (3, 'traptim');
+INSERT INTO book_authors VALUES (4, 'samm');
+INSERT INTO book_authors VALUES (5, 'vaishm');
+
+INSERT INTO library_programme VALUES(1, 'Programme1', 'Address1');
+INSERT INTO library_programme VALUES(2, 'Programme2', 'Address2');
+INSERT INTO library_programme VALUES(3, 'Programme3', 'Address3');
+INSERT INTO library_programme VALUES(4, 'Programme4', 'Address4');
+INSERT INTO library_programme VALUES(5, 'Programme5', 'Address5');
+
+INSERT INTO card VALUES (12345);
+INSERT INTO card VALUES (67890);
+INSERT INTO card VALUES (24680);
+INSERT INTO card VALUES (13579);
+INSERT INTO card VALUES (98765);
+
+INSERT INTO book_copy VALUES (1, 1, 50);
+INSERT INTO book_copy VALUES (2, 2, 30);
+INSERT INTO book_copy VALUES (3, 3, 25);
+INSERT INTO book_copy VALUES (4, 4, 40);
+INSERT INTO book_copy VALUES (5, 5, 20);
+
+insert into book_lendings values(1,1, 12345,'12-jan-2023','10-jun-2023');
+insert into book_lendings values(2,2, 67890,'10-jan-2026','12-jun-2025');
+insert into book_lendings values(3,3, 24680,'05-jan-2027','06-jun-2027');
+insert into book_lendings values(4,4, 13579,'11-jan-2028','11-jun-2028');
+insert into book_lendings values(5,5, 98765,'09-jan-2029','10-jun-2029');
+
+
+insert into book_lendings values(2,3, 98765,'09-jan-2029','10-jun-2029');
+insert into book_lendings values(3,4, 98765,'09-jan-2029','10-jun-2029');
+insert into book_lendings values(5,2, 98765,'09-jan-2029','10-jun-2029');
+insert into book_lendings values(4,1, 98765,'11-jun-2029','10-jun-2029');
+
+select B.book_id,B.title,B.publisher_name,A.author_name,C.no_of_copies,
+L.programme_id from book B,book_authors A,book_copy C,book_lendings L
+ where B.Book_id=C.Book_id AND B.Book_id=L.Book_id AND B.Book_id= A.Book_id;
+
+insert into book_lendings values(4,1, 98765,'11-jun-2029','10-jun-2029');
+
+select card_no
+From book_lendings
+WHERE date_out Between '09-jan-2029' AND '11-jun-2029'
+group by card_no
+having count(*)>3;
+
+Delete from book WHERE book_id='1';
+select * from book;
+select * from book_copy;
+select * from book_lendings;
+
+create view v_publications as
+select pub_year from book;
+select * from v_publications;
+
+create view v_book as
+select B.book_id,B.title,C.no_of_copies
+FROM book B,book_copy C,library_Programme L
+where B.book_id=C.Book_id AND C.programme_id =L.programme_id ;
+
+select * from v_book;
+
+
+
+
