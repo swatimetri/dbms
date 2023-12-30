@@ -1,0 +1,46 @@
+CREATE TABLE salesmans (
+    salesman_id varchar(5),
+    name varchar(10),
+    city varchar(10),
+    commission number(5),
+    primary key (salesman_id));
+
+CREATE TABLE customers (
+    customer_id varchar(10),
+    customer_name varchar(10),
+    city   varchar(10),
+    grade varchar(1),
+    salesman_id varchar(5),
+    primary key (customer_id),
+    foreign key(salesman_id) references salesmans(salesman_id) on delete set null
+);
+
+CREATE TABLE rders (
+    order_no varchar(10),
+    purchase_amount number(5),
+    order_date date,
+    customer_id varchar(5),
+    salesman_id varchar(5),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
+    FOREIGN KEY (salesman_id) REFERENCES salesmans(salesman_id) ON DELETE CASCADE
+);
+
+INSERT INTO salesmans values('S1', 'swati', 'hassan', 100);
+INSERT INTO salesmans values('S2', 'trapthi', 'mangalore', 200);
+INSERT INTO salesmans values('S3', 'niyati', 'Chicago', 300);
+INSERT INTO salesmans values('S4', 'sinchana', 'bangalore', 400);
+INSERT INTO salesmans values('S5', 'vaish', 'bijapur', 500);
+
+INSERT INTO customers values ('C1', 'Customer1', 'hassan', 'A', 'S1');
+INSERT INTO customers values ('C2', 'Customer2', 'mangalore', 'B', 'S2');
+INSERT INTO customers values ('C3', 'Customer3', 'Chicago', 'C', 'S1');
+INSERT INTO customers values ('C4', 'Customer4', 'bangalore', 'D', 'S3');
+INSERT INTO customers values ('C5', 'Customer5', 'bijapur', 'E', 'S2');
+
+INSERT INTO rders VALUES ('O01', 150, '15-jan-2023', 'C1', 'S1');
+INSERT INTO rders VALUES('O02', 200, '20-jun-2024', 'C2', 'S2');
+INSERT INTO rders VALUES('O03', 100, '25-apr-2025', 'C3', 'S1');
+INSERT INTO rders VALUES('O04', 300, '30-dec-2026', 'C4', 'S3');
+INSERT INTO rders VALUES('O05', 180, '27-dec-2023', 'C5', 'S2');
+
+
