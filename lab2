@@ -43,4 +43,48 @@ INSERT INTO rders VALUES('O03', 100, '25-apr-2025', 'C3', 'S1');
 INSERT INTO rders VALUES('O04', 300, '30-dec-2026', 'C4', 'S3');
 INSERT INTO rders VALUES('O05', 180, '27-dec-2023', 'C5', 'S2');
 
+SELECT grade, COUNT(customer_id)
+FROM customers
+WHERE city = 'bangalore'
+GROUP BY grade
+HAVING grade > (SELECT AVG(grade) FROM customers WHERE city = 'bangalore');
+
+
+
+SELECT salesman_id, name
+FROM salesmans a
+WHERE 1 < (
+    SELECT COUNT(*)
+    FROM customers
+    WHERE salesman_id = a.salesman_id
+);
+
+
+SELECT s.salesman_id, s.name, c.customer_name, s.commission 
+FROM salesmans s, customers c
+WHERE s.city = c.city
+UNION
+SELECT s.salesman_id, s.name, 'no match' AS customer_name, s.commission 
+FROM salesmans s
+WHERE NOT s.city = ANY(SELECT city FROM customers)
+ORDER BY 2 DESC;
+
+
+
+
+CREATE VIEW visit_salesman AS
+SELECT a.salesman_id, a.name, b.order_date
+FROM salesmans a, rders b
+WHERE a.salesman_id = b.salesman_id 
+AND b.purchase_amount = (
+    SELECT MAX(purchase_amount)
+    FROM rders c
+    WHERE c.order_date = b.order_date
+);
+
+
+DELETE FROM salesmans 
+WHERE salesman_id = 'S1';
+
+
 
