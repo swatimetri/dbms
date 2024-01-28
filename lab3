@@ -1,0 +1,111 @@
+create table actor
+(
+Act_id number(3),
+act_name varchar(10),
+act_gender char(1),
+primary key(act_id));
+
+create table director
+(
+dir_id number(3),
+dir_name varchar(10),
+dir_phone number(10),
+primary key (dir_id));
+
+create table movies
+(
+mov_id number(4),
+mov_title varchar(10),
+mov_year number(10),
+dir_id number(3),
+primary key (mov_id),
+foreign key(dir_id) references director(dir_id));
+
+
+create table movie_cast
+(
+act_id number(3),
+mov_id number(4),
+role varchar(10),
+primary key(act_id, mov_id),
+foreign key(act_id) references actor(act_id),
+foreign key(mov_id) references movies(mov_id)
+);
+
+create table rating
+(
+mov_id number(4),
+rev_stars varchar(10),
+primary key(mov_id),
+foreign key(mov_id) references movies(mov_id));
+
+insert into actor values(301,'anusha','f');
+insert into actor values(302,'anushi','f');
+insert into actor values(303,'anushu','f');
+insert into actor values(304,'anushe','m');
+insert into actor values(305,'anusho','m');
+insert into actor values(306,'anusho','m');
+
+insert into director values(50,'raj', 9090909098);
+insert into director values(55,'ram', 9090909097);
+insert into director values(56,'rak', 9090909098);
+insert into director values(58,'rat', 9090909096);
+insert into director values(59,'ras', 9090909097);
+insert into director values(60,'ras', 9090909097);
+
+insert into movies values(1001,'bahubali',2017,50);
+INSERT INTO movies VALUES(1002, 'bahu', 2023, 55);
+insert into movies values(1003,'bahubal',2018,56);    
+insert into movies values(1004,'bahuli',2019,58);
+insert into movies values(1005,'bahub',2015,59);
+insert into movies values(1006,'bahub',1999,60);
+
+insert into movie_cast values(301,1001,'hero');
+insert into movie_cast values(302,1002,'heroine');
+insert into movie_cast values(303,1003,'hero');
+insert into movie_cast values(304,1004,'heroine');
+insert into movie_cast values(305,1005,'hero');
+insert into movie_cast values(306,1006,'hero');
+
+
+insert into rating values(1001,4);
+insert into rating values(1002,1);
+insert into rating values(1003,2);
+insert into rating values(1004,3);
+insert into rating values(1005,5);
+
+
+select mov_title from movies
+where dir_id in(select dir_id from director
+where dir_name='raj');
+
+select mov_title
+from movies m, movie_cast mv
+where m.mov_id=mv.mov_id and act_id in (select act_id from movie_cast group by act_id having count(act_id)>1)
+group by mov_title having count(*)>1;
+
+
+SELECT a.act_name, m.mov_title, m.mov_year
+FROM actor a
+JOIN movie_cast c ON a.act_id = c.act_id
+JOIN movies m ON c.mov_id = m.mov_id
+WHERE m.mov_year NOT BETWEEN 2000 AND 2015;
+
+select mov_title,max(rev_stars)
+from movies
+inner join rating using(mov_id)
+group by mov_title
+having max(rev_stars)>0 order by mov_title;
+
+UPDATE rating
+SET rev_stars = 5
+WHERE mov_id IN (
+    SELECT mov_id
+    FROM movies
+    WHERE dir_id IN (
+        SELECT dir_id
+        FROM director
+        WHERE dir_name = 'rat'
+    )
+);
+
