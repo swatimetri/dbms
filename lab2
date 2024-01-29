@@ -49,6 +49,12 @@ WHERE city = 'bangalore'
 GROUP BY grade
 HAVING grade > (SELECT AVG(grade) FROM customers WHERE city = 'bangalore');
 
+query 1.
+select grade, count(distinct customer_id)
+from customer
+group by grade
+having grade > (select avg(grade) from customer where city='Bangalore');
+
 
 
 SELECT salesman_id, name
