@@ -43,19 +43,10 @@ INSERT INTO rders VALUES('O03', 100, '25-apr-2025', 'C3', 'S1');
 INSERT INTO rders VALUES('O04', 300, '30-dec-2026', 'C4', 'S3');
 INSERT INTO rders VALUES('O05', 180, '27-dec-2023', 'C5', 'S2');
 
-SELECT grade, COUNT(customer_id)
-FROM customers
-WHERE city = 'bangalore'
-GROUP BY grade
-HAVING grade > (SELECT AVG(grade) FROM customers WHERE city = 'bangalore');
-
-query 1.
-select grade, count(distinct customer_id)
-from customer
-group by grade
-having grade > (select avg(grade) from customer where city='Bangalore');
-
-
+select grade,
+count (distinct customer_id) as "customer grade for bangalore"
+from customer1 group by grade having grade > (select avg(grade) from customer1 where
+city='bangalore');
 
 SELECT salesman_id, name
 FROM salesmans a
